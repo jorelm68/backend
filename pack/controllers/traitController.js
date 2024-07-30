@@ -18,7 +18,7 @@ const {
     handleIdentify,
     handleRelationship,
     handleEmail,
-    handlePhoto,
+    handlePhotos,
 } = require('../../handler');
 const {
     body,
@@ -51,8 +51,8 @@ const createTrait = async (req, res) => {
         // If the image isn't sent over as an id,
         // that means it's a base64 image
         if (!photo) {
-            const photoModel = await handlePhoto(req);
-            photo = photoModel._id;
+            const photos = await handlePhotos(req, 1);
+            photo = photos[0];
         }
 
         // Create the trait

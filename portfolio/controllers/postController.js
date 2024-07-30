@@ -17,7 +17,7 @@ const {
     handleIdentify,
     handleRelationship,
     handleEmail,
-    handlePhoto,
+    handlePhotos,
 } = require('../../handler');
 const {
     body,
@@ -44,52 +44,47 @@ const Post = require('../models/Post');
 const createPost = async (req, res) => {
     const code = async (req, res) => {
         await handleInputValidation(req, [
-            body('name').exists().withMessage('body: name is required'),
-            body('description').exists().withMessage('body: description is required'),
-            body('link').exists().withMessage('body: link is required'),
+            body('rawData').exists().withMessage('body: rawData is required'),
         ], validationResult);
 
-        let {
+        let { rawData } = req.body;
+        const data = JSON.parse(rawData);
+
+        const {
             name,
             description,
-            photo,
+            selectors,
+            captions,
+            essay,
             link,
-            maxWidth,
-            minWidth,
-            minHeight,
-            maxHeight,
-            photoWidth,
-            photoHeight,
             color,
             backgroundColor,
-            flexDirection,
-            createdAt,
-        } = req.body;
+            start,
+            end,
+            location,
+            numPhotos,
+        } = data;
 
         // Process any images
-        if (!photo) {
-            const photoModel = await handlePhoto(req);
-            photo = photoModel._id;
-        }
+        console.log('body,', req.body, 'files,', req.files);
+        const photos = await handlePhotos(req, numPhotos);
+
+        console.log('photos,', photos);
 
         // Create the post
         const postModel = new Post({
             name,
             description,
+            selectors,
+            media: photos,
+            captions,
+            essay,
             link,
-            photo,
-
-            maxWidth: maxWidth || '100%',
-            minWidth: minWidth || 200,
-            minHeight: minHeight || 200,
-            maxHeight: maxHeight || '100%',
-            photoWidth: photoWidth || 200,
-            photoHeight: photoHeight || 200,
-            color: color || 'black',
-            backgroundColor: backgroundColor || 'white',
-            flexDirection: flexDirection || 'column',
-
-            createdAt: createdAt || new Date(),
+            color,
+            backgroundColor,
+            start,
+            end,
+            location,
         });
         await postModel.save();
 
@@ -133,8 +128,7 @@ const searchPosts = async (req, res) => {
         // Search for posts
         const postModels = await Post.find({
             $or: [
-                { title: { $regex: query, $options: 'i' } },
-                { body: { $regex: query, $options: 'i' } },
+                { selectors: { $regex: query, $options: 'i' } },
             ]
         });
 

@@ -134,7 +134,7 @@ const handleIdentify = async (modelName, _id) => {
 
     const model = await Model.findById(_id);
     if (!model) {
-        throw new Error(`${modelName} not found in the database`);
+        throw new Error(`${modelName}: ${_id} not found in the database`);
     }
 
     return model;
@@ -195,26 +195,37 @@ const handleEmail = async (email, subject, html) => {
     }
 }
 
-const handlePhoto = async (req) => {
-    if (!req.files || !req.files[0] || !req.files[0].buffer) {
-        throw new Error('No file in request');
+const handlePhotos = async (req, numPhotos) => {
+    for (let i = 0; i < numPhotos; ++i) {
+        if (!req.files || !req.files[i] || !req.files[i].buffer) {
+            throw new Error('Files were not properly delivered');
+        }
     }
 
-    // Process the files
-    const _id = `Photo-${new mongoose.Types.ObjectId()}`;
-    const path = `photo/${_id}.jpg`;
-    const buffer = req.files[0].buffer;
-    await handleS3Put(path, buffer);
+    let media = [];
 
-    // Add the image to MongoDB
-    const photoModel = new Photo({
-        _id,
-        path,
-    });
-    await photoModel.save();
+    for (let i = 0; i < numPhotos; ++i) {
+        // Process the image
+        const _id = `Photo-${new mongoose.Types.ObjectId()}`;
+        const path = `photo/${_id}.jpg`;
+        const buffer = req.files[0].buffer;
 
-    // Return the photoModel
-    return photoModel;
+        // Add the image to the AWS S3 bucket
+        await handleS3Put(path, buffer);
+
+        // Add the image to MongoDB
+        const photoModel = new Photo({
+            _id,
+            path,
+        });
+        await photoModel.save();
+
+        // Add the image to the media array
+        media.push(photoModel._id);
+    }
+
+    // Return the media
+    return media;
 }
 
 module.exports = {
@@ -231,5 +242,5 @@ module.exports = {
     handleIdentify,
     handleRelationship,
     handleEmail,
-    handlePhoto,
+    handlePhotos,
 }

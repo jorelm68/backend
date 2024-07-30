@@ -10,23 +10,17 @@ const postSchema = new Schema({
 
     name: String,
     description: String,
-    photo: String, // photo_id
-    
-    maxWidth: String,
-    maxHeight: String,
-    minWidth: String,
-    minHeight: String,
-    photoWidth: String,
-    photoHeight: String,
+    selectors: String,
+    media: [String],
+    captions: [String],
+    essay: String,
+    link: String,
     color: String,
     backgroundColor: String,
-    link: String,
-    flexDirection: String,
+    start: String,
+    end: String,
+    location: String,
 }, { timestamps: true, collection: 'portfolio_post' })
-
-postSchema.methods.comparePassword = async function (password) {
-    return bcrypt.compare(password, this.password);
-}
 
 const Post = mongoose.model('Post', postSchema);
 

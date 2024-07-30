@@ -17,7 +17,7 @@ const {
     handleIdentify,
     handleRelationship,
     handleEmail,
-    handlePhoto,
+    handlePhotos,
 } = require('../../handler');
 const {
     body,

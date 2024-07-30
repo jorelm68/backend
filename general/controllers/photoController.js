@@ -17,7 +17,7 @@ const {
     handleIdentify,
     handleRelationship,
     handleEmail,
-    handlePhoto,
+    handlePhotos,
 } = require('../../handler');
 const {
     body,
@@ -41,10 +41,10 @@ const Trait = require('../../pack/models/Trait');
 const createPhoto = async (req, res) => {
     const code = async (req, res) => {
         // Process the files
-        const photoModel = await handlePhoto(req);
+        const photos = await handlePhotos(req, 1);
 
         // Return the image id
-        return handleResponse(res, photoModel._id);
+        return handleResponse(res, photos[0]);
     }
     return handleRequest(req, res, code);
 }
