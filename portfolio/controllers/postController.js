@@ -88,6 +88,73 @@ const createPost = async (req, res) => {
         });
         await postModel.save();
 
+        const updatedLink = link.replace(/<POST>/g, postModel._id);
+        postModel.link = updatedLink;
+        await postModel.save();
+
+        // Return the post
+        return handleResponse(res, postModel);
+    }
+    return handleRequest(req, res, code);
+}
+
+const updatePost = async (req, res) => {
+    const code = async (req, res) => {
+        await handleInputValidation(req, [
+            body('_id').exists().withMessage('body: _id is required'),
+            body('rawData').exists().withMessage('body: rawData is required'),
+        ], validationResult);
+        
+        const { _id, rawData } = req.body;
+        const data = JSON.parse(rawData);
+
+        const postModel = await handleIdentify('Post', _id);
+
+        const {
+            name,
+            description,
+            selectors,
+            captions,
+            media,
+            essay,
+            link,
+            color,
+            backgroundColor,
+            start,
+            end,
+            location,
+            numPhotos,
+        } = data;
+
+        // Process any images
+        const photos = await handlePhotos(req, numPhotos);
+
+        // combine the new and old media together
+        let newMedia = [];
+        for (const medium of media) {
+            if (medium === 'placeholder') {
+                newMedia.push(photos.shift());
+            }
+            else {
+                newMedia.push(medium);
+            }
+        }
+        
+        // Update the post
+        postModel.name = name;
+        postModel.description = description;
+        postModel.selectors = selectors;
+        postModel.media = newMedia;
+        postModel.captions = captions;
+        postModel.essay = essay;
+        postModel.link = link;
+        postModel.color = color;
+        postModel.backgroundColor = backgroundColor;
+        postModel.start = start;
+        postModel.end = end;
+        postModel.location = location;
+        await postModel.save();
+
         // Return the post
         return handleResponse(res, postModel);
     }
@@ -102,12 +169,18 @@ const deletePost = async (req, res) => {
 
         const { _id } = req.body;
 
-        // Delete the post
         const postModel = await handleIdentify('Post', _id);
+        for (const photo of postModel.media) {
+            const photoModel = await handleIdentify('Photo', photo);
+            await handleS3Delete(photoModel.path);
+            await photoModel.delete();
+        }
+
+        // Delete the post
         await postModel.delete();
 
-        // Return the post
-        return handleResponse(res, postModel);
+        // Return a success message
+        return handleResponse(res, 'Post deleted successfully');
     }
     return handleRequest(req, res, code);
 }
@@ -140,6 +213,7 @@ const searchPosts = async (req, res) => {
 
 module.exports = {
     createPost,
+    updatePost,
     deletePost,
     searchPosts,
 }
