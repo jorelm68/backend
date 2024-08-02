@@ -80,9 +80,7 @@ const createPost = async (req, res) => {
             }
             else {
                 // format the youtube video link
-                const parts = medium.split('?v=');
-                const videoId = parts[1];
-                const youtubeLink = `https://www.youtube.com/embed/${videoId}`;
+                const youtubeLink = `https://www.youtube.com/embed/${medium}`;
                 urls.push(youtubeLink);
             }
         }
@@ -120,7 +118,7 @@ const updatePost = async (req, res) => {
             body('_id').exists().withMessage('body: _id is required'),
             body('rawData').exists().withMessage('body: rawData is required'),
         ], validationResult);
-        
+
         const { _id, rawData } = req.body;
         const data = JSON.parse(rawData);
 
@@ -145,8 +143,6 @@ const updatePost = async (req, res) => {
         // Process any images
         const photos = await handlePhotos(req, numPhotos);
 
-        console.log(media);
-
         // combine the new and old media together
         let urls = [];
         for (const medium of media) {
@@ -160,7 +156,7 @@ const updatePost = async (req, res) => {
                 urls.push(youtubeLink);
             }
         }
-        
+
         // Update the post
         postModel.name = name;
         postModel.description = description;
