@@ -79,7 +79,11 @@ const createPost = async (req, res) => {
                 urls.push(url);
             }
             else {
-                urls.push(medium);
+                // format the youtube video link
+                const parts = medium.split('?v=');
+                const videoId = parts[1];
+                const youtubeLink = `https://www.youtube.com/embed/${videoId}`;
+                urls.push(youtubeLink);
             }
         }
 
@@ -150,7 +154,10 @@ const updatePost = async (req, res) => {
                 urls.push(url);
             }
             else {
-                urls.push(medium);
+                const parts = medium.split('?v=');
+                const videoId = parts[1];
+                const youtubeLink = `https://www.youtube.com/embed/${videoId}`;
+                urls.push(youtubeLink);
             }
         }
         
