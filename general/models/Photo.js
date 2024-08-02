@@ -8,6 +8,7 @@ const photoSchema = new Schema({
     },
 
     path: String,
+    url: String,
 }, { timestamps: true, collection: 'photo' })
 
 const Photo = mongoose.model('Photo', photoSchema);

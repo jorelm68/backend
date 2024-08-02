@@ -11,7 +11,7 @@ const postSchema = new Schema({
     name: String,
     description: String,
     selectors: String,
-    media: [String],
+    urls: [String], // urls
     captions: [String],
     essay: String,
     link: String,

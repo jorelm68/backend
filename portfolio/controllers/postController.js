@@ -55,6 +55,7 @@ const createPost = async (req, res) => {
             description,
             selectors,
             captions,
+            media,
             essay,
             link,
             color,
@@ -65,18 +66,29 @@ const createPost = async (req, res) => {
             numPhotos,
         } = data;
 
+        let urls = [];
+
         // Process any images
-        console.log('body,', req.body, 'files,', req.files);
         const photos = await handlePhotos(req, numPhotos);
 
-        console.log('photos,', photos);
+        for (const medium of media) {
+            if (medium === 'placeholder') {
+                const photoModel = await handleIdentify('Photo', photos[0]);
+                const url = photoModel.url;
+
+                urls.push(url);
+            }
+            else {
+                urls.push(medium);
+            }
+        }
 
         // Create the post
         const postModel = new Post({
             name,
             description,
             selectors,
-            media: photos,
+            urls,
             captions,
             essay,
             link,
@@ -130,13 +142,15 @@ const updatePost = async (req, res) => {
         const photos = await handlePhotos(req, numPhotos);
 
         // combine the new and old media together
-        let newMedia = [];
+        let urls = [];
         for (const medium of media) {
             if (medium === 'placeholder') {
-                newMedia.push(photos.shift());
+                const photoModel = await handleIdentify('Photo', photos[0]);
+                const url = photoModel.url;
+                urls.push(url);
             }
             else {
-                newMedia.push(medium);
+                urls.push(medium);
             }
         }
         
@@ -144,7 +158,7 @@ const updatePost = async (req, res) => {
         postModel.name = name;
         postModel.description = description;
         postModel.selectors = selectors;
-        postModel.media = newMedia;
+        postModel.urls = urls;
         postModel.captions = captions;
         postModel.essay = essay;
         postModel.link = link;
@@ -170,10 +184,14 @@ const deletePost = async (req, res) => {
         const { _id } = req.body;
 
         const postModel = await handleIdentify('Post', _id);
-        for (const photo of postModel.media) {
-            const photoModel = await handleIdentify('Photo', photo);
-            await handleS3Delete(photoModel.path);
-            await photoModel.deleteOne();
+        for (const url of postModel.urls) {
+            if (url.includes('api/photo/readPhoto/Photo-')) {
+                const parts = url.split('/');
+                const photoId = parts[6]; // https: / / <URL> / api / photo / readPhoto / <PhotoId> / 1080
+                const photoModel = await handleIdentify('Photo', photoId)
+                await handleS3Delete(photoModel.path);
+                await photoModel.deleteOne();
+            }
         }
 
         // Delete the post
