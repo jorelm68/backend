@@ -173,11 +173,11 @@ const deletePost = async (req, res) => {
         for (const photo of postModel.media) {
             const photoModel = await handleIdentify('Photo', photo);
             await handleS3Delete(photoModel.path);
-            await photoModel.delete();
+            await photoModel.deleteOne();
         }
 
         // Delete the post
-        await postModel.delete();
+        await postModel.deleteOne();
 
         // Return a success message
         return handleResponse(res, 'Post deleted successfully');
