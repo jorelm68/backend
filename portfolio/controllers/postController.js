@@ -145,6 +145,8 @@ const updatePost = async (req, res) => {
         // Process any images
         const photos = await handlePhotos(req, numPhotos);
 
+        console.log(media);
+
         // combine the new and old media together
         let urls = [];
         for (const medium of media) {

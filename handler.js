@@ -196,6 +196,10 @@ const handleEmail = async (email, subject, html) => {
 }
 
 const handlePhotos = async (req, numPhotos) => {
+    if (numPhotos < 1) {
+        return [];
+    }
+    
     for (let i = 0; i < numPhotos; ++i) {
         if (!req.files || !req.files[i] || !req.files[i].buffer) {
             throw new Error('Files were not properly delivered');
