@@ -121,9 +121,16 @@ const deletePhoto = async (req, res) => {
     return handleRequest(req, res, code);
 }
 
+const initials = async (req, res) => {
+    const buffer = fs.readFileSync('assets/photos/initials.png')
+    res.setHeader('Content-Type', 'image/png')
+    res.send(buffer)
+}
+
 module.exports = {
     createPhoto,
     readPhoto,
     updatePhoto,
     deletePhoto,
+    initials,
 }
