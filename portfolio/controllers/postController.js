@@ -154,9 +154,7 @@ const updatePost = async (req, res) => {
                 urls.push(url);
             }
             else {
-                const parts = medium.split('?v=');
-                const videoId = parts[1];
-                const youtubeLink = `https://www.youtube.com/embed/${videoId}`;
+                const youtubeLink = `https://www.youtube.com/embed/${medium}`;
                 urls.push(youtubeLink);
             }
         }
