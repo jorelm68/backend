@@ -60,7 +60,7 @@ app.use((req, res, next) => {
 
 // Middleware to process the API key
 const apiKeyMiddleware = (req, res, next) => {
-    if (req.path === 'api/photo/initials') {
+    if (req.path.includes('api/photo/initials')) {
         return next()
     }
 
