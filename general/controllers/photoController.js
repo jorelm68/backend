@@ -52,11 +52,11 @@ const createPhoto = async (req, res) => {
 const readPhoto = async (req, res) => {
     const code = async (req, res) => {
         await handleInputValidation(req, [
-            body('photo').exists().withMessage('body: photo is required'),
-            body('resolution').exists().withMessage('body: resolution is required'),
+            param('photo').exists().withMessage('param: photo is required'),
+            param('resolution').exists().withMessage('param: resolution is required'),
         ], validationResult);
 
-        const { photo, resolution } = req.body;
+        const { photo, resolution } = req.params;
 
         const photoModel = await handleIdentify('Photo', photo);
 
