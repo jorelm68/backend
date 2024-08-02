@@ -60,6 +60,10 @@ app.use((req, res, next) => {
 
 // Middleware to process the API key
 const apiKeyMiddleware = (req, res, next) => {
+    if (req.path === 'api/photo/initials') {
+        return next()
+    }
+
     const apiKey = req.header('x-api-key')
 
     if (!apiKey || apiKey !== process.env.API_KEY) {
