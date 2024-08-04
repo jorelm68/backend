@@ -128,34 +128,16 @@ const updatePost = async (req, res) => {
             name,
             description,
             selectors,
-            captions,
-            media,
-            essay,
             link,
+            essay,
             color,
             backgroundColor,
+            urls,
+            captions,
             start,
             end,
             location,
-            numPhotos,
         } = data;
-
-        // Process any images
-        const photos = await handlePhotos(req, numPhotos);
-
-        // combine the new and old media together
-        let urls = [];
-        for (const medium of media) {
-            if (medium === 'placeholder') {
-                const photoModel = await handleIdentify('Photo', photos[0]);
-                const url = photoModel.url;
-                urls.push(url);
-            }
-            else {
-                const youtubeLink = `https://www.youtube.com/embed/${medium}`;
-                urls.push(youtubeLink);
-            }
-        }
 
         // Update the post
         postModel.name = name;
