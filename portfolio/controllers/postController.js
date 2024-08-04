@@ -55,7 +55,7 @@ const createPost = async (req, res) => {
             description,
             selectors,
             captions,
-            media,
+            urls,
             essay,
             link,
             color,
@@ -65,25 +65,6 @@ const createPost = async (req, res) => {
             location,
             numPhotos,
         } = data;
-
-        let urls = [];
-
-        // Process any images
-        const photos = await handlePhotos(req, numPhotos);
-
-        for (const medium of media) {
-            if (medium === 'placeholder') {
-                const photoModel = await handleIdentify('Photo', photos[0]);
-                const url = photoModel.url;
-
-                urls.push(url);
-            }
-            else {
-                // format the youtube video link
-                const youtubeLink = `https://www.youtube.com/embed/${medium}`;
-                urls.push(youtubeLink);
-            }
-        }
 
         // Create the post
         const postModel = new Post({
