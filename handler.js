@@ -212,7 +212,7 @@ const handlePhotos = async (req, numPhotos) => {
         // Process the image
         const _id = `Photo-${new mongoose.Types.ObjectId()}`;
         const path = `photo/${_id}.jpg`;
-        const url = `${process.env.URL}/${_id}/${1080}`;
+        const url = `${process.env.URL}/api/photo/readPhoto/${_id}/${1080}`;
         const buffer = req.files[i].buffer;
 
         // Add the image to the AWS S3 bucket
