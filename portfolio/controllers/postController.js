@@ -63,7 +63,6 @@ const createPost = async (req, res) => {
             start,
             end,
             location,
-            numPhotos,
         } = data;
 
         // Create the post
