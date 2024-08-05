@@ -83,22 +83,22 @@ const handleResize = async (buffer, resolution) => {
     // Calculate the aspect ratio
     const aspectRatio = originalWidth / originalHeight;
 
-    // Calculate the target width and height based on the desired resolution
+    // Calculate the target width and height based on the resolution (longest side)
     let targetWidth, targetHeight;
 
-    if (aspectRatio > 1) {
-        // Landscape image
-        targetWidth = Math.sqrt(resolution * aspectRatio);
-        targetHeight = targetWidth / aspectRatio;
+    if (originalWidth > originalHeight) {
+        // Landscape image (width is the longest side)
+        targetWidth = resolution;
+        targetHeight = Math.round(resolution / aspectRatio);
     } else {
-        // Portrait image
-        targetHeight = Math.sqrt(resolution / aspectRatio);
-        targetWidth = targetHeight * aspectRatio;
+        // Portrait or square image (height is the longest side)
+        targetHeight = resolution;
+        targetWidth = Math.round(resolution * aspectRatio);
     }
 
     // Resize the image while maintaining the aspect ratio
     const resizedImageBuffer = await sharpInstance
-        .resize(Math.round(targetWidth), Math.round(targetHeight))
+        .resize(targetWidth, targetHeight)
         .toBuffer();
 
     return resizedImageBuffer;
