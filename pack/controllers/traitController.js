@@ -19,6 +19,7 @@ const {
     handleRelationship,
     handleEmail,
     handlePhotos,
+    makePhoto,
 } = require('../../handler');
 const {
     body,
@@ -44,10 +45,15 @@ const createTrait = async (req, res) => {
         await handleInputValidation(req, [
             body('name').exists().withMessage('body: name is required'),
             body('description').exists().withMessage('body: description is required'),
-            body('photo').exists().withMessage('body: photo is required'),
         ], validationResult);
 
         let { name, description, photo } = req.body;
+
+        if (!photo) {
+            const buffer = fs.readFileSync('assets/photos/initials.png')
+            const photoModel = await makePhoto(buffer);
+            photo = photoModel._id;
+        }
 
         // Create the trait
         const traitModel = new Trait({
@@ -69,7 +75,7 @@ const findTrait = async (req, res) => {
         await handleInputValidation(req, [
             body('name').exists().withMessage('body: name is required'),
         ], validationResult);
-        
+
         const { name } = req.body;
 
         // Find the trait
@@ -112,7 +118,7 @@ const searchTraits = async (req, res) => {
         await handleInputValidation(req, [
             body('search').exists().withMessage('body: search is required'),
         ], validationResult);
-        
+
         const { search } = req.body;
 
         // Find the traits
