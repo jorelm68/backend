@@ -62,7 +62,7 @@ const readPhoto = async (req, res) => {
 
         // Get the image buffer from AWS S3
         const { Body } = await handleS3Get(photoModel.path);
-        const buffer = await handleResize(Body, resolution);
+        const buffer = await handleResize(Body, parseInt(resolution));
 
         // Return the image buffer in the response
         res.setHeader('Content-Type', 'image/jpeg');
