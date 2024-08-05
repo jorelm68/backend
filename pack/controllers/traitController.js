@@ -44,16 +44,10 @@ const createTrait = async (req, res) => {
         await handleInputValidation(req, [
             body('name').exists().withMessage('body: name is required'),
             body('description').exists().withMessage('body: description is required'),
+            body('photo').exists().withMessage('body: photo is required'),
         ], validationResult);
 
         let { name, description, photo } = req.body;
-
-        // If the image isn't sent over as an id,
-        // that means it's a base64 image
-        if (!photo) {
-            const photos = await handlePhotos(req, 1);
-            photo = photos[0];
-        }
 
         // Create the trait
         const traitModel = new Trait({
