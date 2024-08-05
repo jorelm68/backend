@@ -72,16 +72,37 @@ const handleS3Delete = async (key) => {
     }).promise()
 }
 
-const handleResize = async (buffer, size) => {
-    let imageSize = parseInt(size, 10) || 1080 // Default size is 1080 if not provided or invalid
+const handleResize = async (buffer, resolution) => {
+    const sharpInstance = sharp(buffer);
 
-    // Resize the image using sharp
-    const resizedImageBuffer = await sharp(buffer)
-        .resize(imageSize, imageSize) // Resize to the desired size
-        .toBuffer()
+    // Get the metadata of the image to retrieve original dimensions
+    const metadata = await sharpInstance.metadata();
+    const originalWidth = metadata.width;
+    const originalHeight = metadata.height;
 
-    return resizedImageBuffer
-}
+    // Calculate the aspect ratio
+    const aspectRatio = originalWidth / originalHeight;
+
+    // Calculate the target width and height based on the desired resolution
+    let targetWidth, targetHeight;
+
+    if (aspectRatio > 1) {
+        // Landscape image
+        targetWidth = Math.sqrt(resolution * aspectRatio);
+        targetHeight = targetWidth / aspectRatio;
+    } else {
+        // Portrait image
+        targetHeight = Math.sqrt(resolution / aspectRatio);
+        targetWidth = targetHeight * aspectRatio;
+    }
+
+    // Resize the image while maintaining the aspect ratio
+    const resizedImageBuffer = await sharpInstance
+        .resize(Math.round(targetWidth), Math.round(targetHeight))
+        .toBuffer();
+
+    return resizedImageBuffer;
+};
 
 const sendPushNotification = async (pushToken, body) => {
     const message = {
