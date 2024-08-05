@@ -78,7 +78,7 @@ const findTrait = async (req, res) => {
         if (!traitModel) {
             throw new Error('Trait not found');
         }
-        
+
         return handleResponse(res, traitModel);
     }
     return handleRequest(req, res, code);
@@ -117,6 +117,8 @@ const searchTraits = async (req, res) => {
 
         // Find the traits
         const traitModels = await Trait.find({ name: { $regex: search, $options: 'i' } });
+
+        console.log(traitModels);
 
         // Return their ids
         return handleResponse(res, traitModels.map(traitModel => traitModel._id));

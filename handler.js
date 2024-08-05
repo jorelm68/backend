@@ -30,8 +30,8 @@ const handleRequest = async (req, res, code) => {
         if (!res.statusCode || res.statusCode === 200) {
             res.status(400);
         }
-        res.json({ errorMessage: error.message, data: null })
         console.log(error);
+        res.json({ errorMessage: error.message, data: null })
     }
 }
 const handleResponse = async (res, data) => {
