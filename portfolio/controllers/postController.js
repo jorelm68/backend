@@ -188,6 +188,17 @@ const searchPosts = async (req, res) => {
             ]
         });
 
+        // Sort by start
+        postModels.sort((a, b) => {
+            if (a.start < b.start) {
+                return -1;
+            }
+            if (a.start > b.start) {
+                return 1;
+            }
+            return 0;
+        });
+
         // Return the post ids
         return handleResponse(res, postModels.map(post => post._id));
     }
