@@ -190,10 +190,10 @@ const searchPosts = async (req, res) => {
 
         // Sort by start
         postModels.sort((a, b) => {
-            if (a.start < b.start) {
+            if (a.start > b.start) {
                 return -1;
             }
-            if (a.start > b.start) {
+            if (a.start < b.start) {
                 return 1;
             }
             return 0;
