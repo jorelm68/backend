@@ -5,21 +5,8 @@ const cors = require('cors')
 const multer = require('multer')
 const mongoose = require('mongoose')
 
-const generalRoutes = require('./general/routes/general')
-const photoRoutes = require('./general/routes/photo')
-
-const packAccountRoutes = require('./pack/routes/account')
-const packChatRoutes = require('./pack/routes/chat')
-const packCodeRoutes = require('./pack/routes/code')
-const packEventRoutes = require('./pack/routes/event')
-const packGroupRoutes = require('./pack/routes/group')
-const packMeetRoutes = require('./pack/routes/meet')
-const packMessageRoutes = require('./pack/routes/message')
-const packNotificationRoutes = require('./pack/routes/notification')
-const packPlaceRoutes = require('./pack/routes/place')
-const packStudentRoutes = require('./pack/routes/student')
-const packTraitRoutes = require('./pack/routes/trait')
-
+const generalRoutes = require('./portfolio/routes/general')
+const photoRoutes = require('./portfolio/routes/photo')
 const portfolioPostRoutes = require('./portfolio/routes/post')
 
 // express app
@@ -78,21 +65,8 @@ const apiKeyMiddleware = (req, res, next) => {
 app.use('/api', apiKeyMiddleware)
 
 // routes
-app.use('/api/general', generalRoutes)
-app.use('/api/photo', photoRoutes)
-
-app.use('/api/pack/account', packAccountRoutes)
-app.use('/api/pack/chat', packChatRoutes)
-app.use('/api/pack/code', packCodeRoutes)
-app.use('/api/pack/event', packEventRoutes)
-app.use('/api/pack/group', packGroupRoutes)
-app.use('/api/pack/meet', packMeetRoutes)
-app.use('/api/pack/message', packMessageRoutes)
-app.use('/api/pack/notification', packNotificationRoutes)
-app.use('/api/pack/place', packPlaceRoutes)
-app.use('/api/pack/student', packStudentRoutes)
-app.use('/api/pack/trait', packTraitRoutes)
-
+app.use('/api/portfolio/general', generalRoutes)
+app.use('/api/portfolio/photo', photoRoutes)
 app.use('/api/portfolio/post', portfolioPostRoutes)
 
 // connect to db

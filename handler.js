@@ -9,18 +9,8 @@ const s3 = new AWS.S3({
     secretAccessKey: process.env.SECRET_ACCESS_KEY,
 })
 
-const Account = require('./pack/models/Account');
-const Chat = require('./pack/models/Chat');
-const Code = require('./pack/models/Code')
-const Event = require('./pack/models/Event');
-const Group = require('./pack/models/Group');
-const Meet = require('./pack/models/Meet');
-const Message = require('./pack/models/Message');
-const Notification = require('./pack/models/Notification');
-const Photo = require('./general/models/Photo');
-const Place = require('./pack/models/Place');
-const Student = require('./pack/models/Student');
-const Trait = require('./pack/models/Trait');
+const Photo = require('./portfolio/models/Photo');
+const Post = require('./portfolio/models/Post');
 
 const handleRequest = async (req, res, code) => {
     try {
@@ -161,29 +151,6 @@ const handleIdentify = async (modelName, _id) => {
     return model;
 }
 
-const handleRelationship = async (student1, student2) => {
-    const student1Model = await Student.findById(student1);
-    const student2Model = await Student.findById(student2);
-
-    if (!student1Model || !student2Model) {
-        throw new Error(`Student not found in the database`);
-    }
-
-    if (student1 === student2) {
-        return 'self';
-    }
-    if (student1Model.friends.includes(student2)) {
-        return 'friend';
-    }
-    if (student1Model.incomingRequests.includes(student2)) {
-        return 'incomingRequest';
-    }
-    if (student1Model.outgoingRequests.includes(student2)) {
-        return 'outgoingRequest';
-    }
-    return 'none';
-}
-
 const handleEmail = async (email, subject, html) => {
     try {
         // Create a transporter using SMTP settings
@@ -288,7 +255,6 @@ module.exports = {
     handleMongoFilter,
     handleMongoGet,
     handleIdentify,
-    handleRelationship,
     handleEmail,
     handlePhotos,
     makePhoto,

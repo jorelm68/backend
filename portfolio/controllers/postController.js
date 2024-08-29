@@ -15,7 +15,6 @@ const {
     handleMongoFilter,
     handleMongoGet,
     handleIdentify,
-    handleRelationship,
     handleEmail,
     handlePhotos,
 } = require('../../handler');
@@ -25,21 +24,8 @@ const {
     validationResult
 } = require('express-validator')
 
-const Account = require('../../pack/models/Account');
-const Chat = require('../../pack/models/Chat');
-const Code = require('../../pack/models/Code')
-const Event = require('../../pack/models/Event');
-const Group = require('../../pack/models/Group');
-const Meet = require('../../pack/models/Meet');
-const Message = require('../../pack/models/Message');
-const Notification = require('../../pack/models/Notification');
-const Photo = require('../../general/models/Photo');
-const Place = require('../../pack/models/Place');
-const Student = require('../../pack/models/Student');
-const Trait = require('../../pack/models/Trait');
-
+const Photo = require('../models/Photo');
 const Post = require('../models/Post');
-
 
 const createPost = async (req, res) => {
     const code = async (req, res) => {
