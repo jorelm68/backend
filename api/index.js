@@ -5,9 +5,9 @@ const cors = require('cors')
 const multer = require('multer')
 const mongoose = require('mongoose')
 
-const generalRoutes = require('./portfolio/routes/general')
-const photoRoutes = require('./portfolio/routes/photo')
-const portfolioPostRoutes = require('./portfolio/routes/post')
+const generalRoutes = require('../portfolio/routes/general')
+const photoRoutes = require('../portfolio/routes/photo')
+const portfolioPostRoutes = require('../portfolio/routes/post')
 
 // express app
 const app = express()
